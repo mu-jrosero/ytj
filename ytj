@@ -9,7 +9,7 @@
 # If '-k' or '-l' options used, use 'shift' command until the youtube search
 # term argument is $1.
 
-usage={-h "Outputs usage statement.", -k "Keeps the video files downloaded", -l "Download and play the first result only."};
+#usage={-h "Outputs usage statement.", -k "Keeps the video files downloaded", -l "Download and play the first result only."};
 
 case $1 in
     	-h=*)
@@ -79,23 +79,16 @@ wget "$surl" -O output.txt
 #
 # Store all the extracted lines in ytj.results:
 
-grep context-data-item output.txt > ytj.results
+grep yt-lockup2-video output.txt > ytj.results
 
 # From ytj.results, extract the list of video ids $IDS to download;
 # $IDS would contain a list that looks something like
 # "rARN6agiW7o HhFVSwlncGg k4R_2rfJN8g 1w7OgIMMRc4 ...", where each item in
 # $IDS represents the ID of a youtube video.
 
-#IDS=ytj.results
+IDS=`sed 's/["]["]*/ /g' ytj.results |sed 's/data-context-item-id=/&\n/;s/.*\n//;s/data-context-item-views=/\n&/;s/\n.*//'`
 
-#echo $IDS | tr ' ' '\n' | tr '-' '\n'
-
-#echo "Ids: " $IDssed 's/item-id=/&\n/;s/.*\n//;s/data/\n&/;s/\n.*//' 
-
-##IDS=`awk '/id.+data/ {print $0}' ytj.results`
-#cat ytj.results > temp.txt
-
-#echo $(sed 's/item-id=/&\n/;s/.*\n//;s/data/\n&/;s/\n.*//' ytj.results)
+echo "IDS: " $IDS
 
 # Also from ytj.results, extract the list of video filenames $TITLES (for
 # mplayer to play).
@@ -111,10 +104,16 @@ grep context-data-item output.txt > ytj.results
 # video filenames.
 
 
+TITLES=`sed 's/["]["]*/ /g' ytj.results|sed 's/data-context-item-title=/&\n/;s/.*\n//;s/data-context-item-type=/.webm\n&/;s/\n.*//'|sed 's/[;][;]*/ /g'|sed 's/&amp/\n&/;s/\n.*//'|tr " " "_" |sed "s/[^A-Za-z0-9_@-\.]//g"|tr '\n' ' '`
 
+#for i in $TITLES
+#do 
 
+ #i=$1.webm
 
+#done
 
+echo "Titles: " $TITLES  
 
 # Schedule mplayer to start playing the list of files in $TITLES
 # after about 10 seconds.  Use nohup.
