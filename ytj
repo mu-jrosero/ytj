@@ -34,11 +34,11 @@ esac
 # Change to the newly created directory, so that any new files that
 # are created are created in the new directory.
 
-string=$1
+string=$*
 
-##newString=`echo $string | tr ' ' '_' | tr -d '[{}(),\!]' | tr -d "\'" | tr '[A-Z]' '[a-z]'` 
+newVid=`echo $string | tr ' ' '_' | tr -d '[{}(),\!]' | tr -d "\'" | tr '[A-Z]' '[a-z]'` 
 
-newVid=$(echo $string | sed "s/  */_/g" | sed "s/[^A-Za-z0-9_@-\.]//g")
+##newVid=$(echo $string | sed "s/  */_/g" | sed "s/[^A-Za-z0-9_@-\.]//g")
 
 mkdir $newVid
 
@@ -52,26 +52,21 @@ cd $newVid
 
 
 
-surl="http://www.youtube.com/resultes?search_query="(echo $newVid | sed "s/  */+/g")
+#surl="http://www.youtube.com/results?search_query="(echo $newVid | sed "s/  */+/g")
 
-##userInput=`echo $newVid | tr '_' '+'`
+userInput=`echo $newVid | tr '_' '+'`
 
-##surl="http://www.youtube.com/results?search query=$userInput"
+surl="http://www.youtube.com/results?search query=$userInput"
 
 echo "URL: " $surl
 
-wget "$surl" --quiet -O searchOutput.txt
+wget "$surl" -O output.txt 
+
 
 # If youtube found no videos results for the search, then exit
 # with an error message.
 
-if [ -s searchOutput.txt=false ]
-then
-	echo "No videos found.. please try again!"
-	exit
-else
-	echo "YAY"
-fi
+
 
 
 # From the search results page retrieved by wget, extract html lines like the
@@ -84,14 +79,7 @@ fi
 #
 # Store all the extracted lines in ytj.results:
 
-wget "$surl" -0 - 2> /dev/null |grep result-item-video > ytj.results 
-
-##| grep result-item-video" > ytj.results
-
-##awk '/<li class="yt-grid-box/, /views">/ {print $0}' $searchOutput.txt
-
-#i dont think we need this: wget --convert-links $surl --output-document=ytj.results
-
+grep result-item-video output.txt > ytj.results
 
 
 # From ytj.results, extract the list of video ids $IDS to download;
@@ -99,9 +87,17 @@ wget "$surl" -0 - 2> /dev/null |grep result-item-video > ytj.results
 # "rARN6agiW7o HhFVSwlncGg k4R_2rfJN8g 1w7OgIMMRc4 ...", where each item in
 # $IDS represents the ID of a youtube video.
 
+#IDS=ytj.results
 
+#echo $IDS | tr ' ' '\n' | tr '-' '\n'
 
+#echo "Ids: " $IDs
 
+##IDS=`awk '/id.+data/ {print $0}' ytj.results`
+
+##echo "Ids: " $IDS
+
+IDS=$(sed -n "/item-id/{s/[\'\"]/\n/g;p}" > youtube2.html)
 
 
 # Also from ytj.results, extract the list of video filenames $TITLES (for
