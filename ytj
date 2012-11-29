@@ -79,8 +79,7 @@ wget "$surl" -O output.txt
 #
 # Store all the extracted lines in ytj.results:
 
-grep result-item-video output.txt > ytj.results
-
+grep context-data-item output.txt > ytj.results
 
 # From ytj.results, extract the list of video ids $IDS to download;
 # $IDS would contain a list that looks something like
@@ -91,14 +90,12 @@ grep result-item-video output.txt > ytj.results
 
 #echo $IDS | tr ' ' '\n' | tr '-' '\n'
 
-#echo "Ids: " $IDs
+#echo "Ids: " $IDssed 's/item-id=/&\n/;s/.*\n//;s/data/\n&/;s/\n.*//' 
 
 ##IDS=`awk '/id.+data/ {print $0}' ytj.results`
+#cat ytj.results > temp.txt
 
-##echo "Ids: " $IDS
-
-IDS=$(sed -n "/item-id/{s/[\'\"]/\n/g;p}" > youtube2.html)
-
+#echo $(sed 's/item-id=/&\n/;s/.*\n//;s/data/\n&/;s/\n.*//' ytj.results)
 
 # Also from ytj.results, extract the list of video filenames $TITLES (for
 # mplayer to play).
@@ -142,6 +139,6 @@ IDS=$(sed -n "/item-id/{s/[\'\"]/\n/g;p}" > youtube2.html)
 # If nothing is being kept, cd .., and remove the directory that was created to
 # hold the videos.
 
-cd ..
+#cd ..
 #rm -r $newString
 
