@@ -86,7 +86,7 @@ grep yt-lockup2-video output.txt > ytj.results
 # "rARN6agiW7o HhFVSwlncGg k4R_2rfJN8g 1w7OgIMMRc4  ...", where each item in
 # $IDS represents the ID of a youtube video.
 
-IDS=`sed 's/data-context-item-id=\"/&\n/;s/.*\n//;s/data-context-item-views=/\n&/;s/\n.*//' ytj.results|sed -e 's/^[ \t]*//'|sed 's/^/\"https\:\/\/www.youtube.com\/watch\?v\=/'` 
+IDS=`sed 's/data-context-item-id=\"/&\n/;s/.*\n//;s/data-context-item-views=/\n&/;s/\n.*//' ytj.results|sed -e 's/^[ \t]*//'|sed 's/^/https\:\/\/www.youtube.com\/watch\?v\=/'|sed 's/["]["]*/ /g'` 
 
 echo "IDS: " $IDS
 
@@ -114,22 +114,20 @@ echo "Titles: " $TITLES
 # doesn't get huge.
 
 
-
+nohup -c sleep 10; mplayer -really-quiet -vo null $TITLES &
 
 
 
 # Loop o download videos using the ids in $IDS.
 # Use yt to handle the downloading and saving of videos.
 
-#max= `wc -l ytj.results` 
-#count= 0
-for ((i=1;i<=100;i++));
+
+for each in $IDS
 do
-/export/home/hawkdom2/s0738363/cs370/ytj/yt $IDS
+/export/home/hawkdom2/s0742045/cs370/ytj/yt $each
+
 done
  
-
-
 
 # Clean up any temporary files.
 # Clean up .webm files if not keeping them.
