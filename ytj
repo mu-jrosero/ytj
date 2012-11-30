@@ -104,9 +104,9 @@ echo "IDS: " $IDS
 # video filenames.
 #sed 's/&amp/\n&/;s/\n.*//'
 
-TITLES=`sed 's/["]["]*/ /g' ytj.results|sed 's/data-context-item-title=/&\n/;s/.*\n//;s/data-context-item-type=/.webm\n&/;s/\n.*//'|sed 's/[;][;]*/ /g'|sed "s/amp//g"|sed "s/lt//g"|sed "s/bgt//g"|sed "s/39//g"|sed "s/quot//g"|tr " " "_" |sed "s/[^A-Za-z0-9_@-\.]//g"|tr '\n' ' '`
+TITLES=`sed 's/["]["]*/ /g' ytj.results|sed 's/data-context-item-title=/#\n/;s/.*\n//;s/data-context-item-type=/.webm\n&/;s/\n.*//'|sed 's/[;][;]*/ /g'|sed "s/amp//g"|sed "s/lt//g"|sed "s/bgt//g"|sed "s/39//g"|sed "s/quot//g"|tr " " "_" |sed "s/[^A-Za-z0-9_@-\.]//g"|tr '\n' ' '`
 
-echo "Titles: " $TITLES  
+echo "Titles: " $TITLES 
 
 # Schedule mplayer to start playing the list of files in $TITLES
 # after about 10 seconds.  Use nohup.
@@ -114,7 +114,7 @@ echo "Titles: " $TITLES
 # doesn't get huge.
 
 
-nohup -c sleep 10; mplayer -really-quiet -vo null $TITLES &
+#nohup -c sleep 10; mplayer -really-quiet -vo null $TITLES &
 
 
 
@@ -127,7 +127,11 @@ do
 /export/home/hawkdom2/s0742045/cs370/ytj/yt $each
 
 done
- 
+sleep 30
+for eac in $TITLES
+do
+mplayer $eac
+done
 
 # Clean up any temporary files.
 # Clean up .webm files if not keeping them.
